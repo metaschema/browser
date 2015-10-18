@@ -51,6 +51,14 @@ window.ooo={};
   if(n.childNodes.length>0){if(n.nodeName!='#document'){test+=closet+nl;}for(var i=0;i<n.childNodes.length;i++){if(n.childNodes[i].nodeName=='#text'){var data=this._xntext(n.childNodes[i]);if(killempty){for(var axe=0;axe<1000;axe++){if(data.indexOf(' ')==0){data=data.replace(' ', '');}else if(data.indexOf('\n')==0){data=data.replace('\n', '');}else{axe=2000;}}}if(data!=''){test+=tab+incr+this._xntext(n.childNodes[i])+nl;}}else if(n.childNodes[i].nodeName=='#cdata-section'){test+=tab+incr+bcdata+this._xntext(n.childNodes[i])+acdata+nl;}else if(n.childNodes[i].nodeType==1){test+=this.tostringformat(n.childNodes[i],tab+incr,opent,closet,nl,incr,rcd,killempty);}}}
 	else{if(n.nodeName!='#document'){return test+='/'+closet+nl;}}if(n.nodeName!='#document'){return test+tab+opent+'/'+n.nodeName+closet+nl;}else{return test;}}};
  $.listonode=function(nl){var xml='<?xml version="1.0" encoding="utf-8" ?><document>\n<!--copyright openuno.org 2015-->';for(var n=0;n<nl.length;n++){xml+=this.xml(nl[n]);}return this.parsexml(xml+'</document>').documentElement;};
+//---------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------- OBJECT 2 XML
+$.o2xml=function(o,n){if(!n){n='item'}if(Array.prototype.isPrototypeOf(o)){return $.a2xml(n,o);}else if(typeof(o)=='object'){return $._o2xml(n,o);}else{return $.v2xml(n,o);}};
+$._o2xml=function(n,o){var xml='<'+n+'>';var pr;if(n!='hashtags'){
+	for(var prop in o){pr=prop;if(!isNaN(prop)){pr='x'+pr}if(Array.prototype.isPrototypeOf(o[prop])){xml+=$.a2xml(pr,o[prop]);}else if(typeof(o[prop])=='object'){xml+=$._o2xml(pr,o[prop]);}else{xml+=$.v2xml(pr,o[prop]);}}return xml+'</'+n+'>';}else{return ''}};
+$.a2xml=function(n,a){var xml='';for(var i=0;i<a.length;i++){if(Array.prototype.isPrototypeOf(a[i])){xml+=$.a2xml(n,a[i]);}else if(typeof(a[i]=='object')){xml+=$._o2xml(n,a[i]);}else{xml+=$.v2xml(n,a[i]);}}return xml;};
+$.v2xml=function(n,v){if(typeof(v)=='function'){return ''}var cd=false;if(typeof(v)=='string'){cd=true;}if(cd){return '<'+n+'><![CDATA['+v+']]></'+n+'>';}else{return '<'+n+'>'+v+'</'+n+'>';}};
 /*--------------------------------------------------------------------------------------------------  XPATH SELECTOR TOOL */
  $.getdoc=function(n){while(n.nodeType!=9){n=n.parentNode;}return n;};
  $.selone=function(xpath,n,_doc){if(!n){return null;};if(isIE){return n.selectSingleNode(xpath);}else{if(!_doc){_doc=this.getdoc(n);}var xx=_doc.evaluate(xpath,n,null,XPathResult.ANY_TYPE,null);if(xx.resultType==1){return xx.numberValue}else{return xx.iterateNext();}}};
