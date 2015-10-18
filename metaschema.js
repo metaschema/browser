@@ -54,6 +54,7 @@ window.ooo={};
 //---------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------- OBJECT 2 XML
+$.JSON2xmldoc=function(o,n){var s='<?xml version="1.0" encoding="utf-8" ?>\n'+$.o2xml(o,n);return $.parsexml(s).documentElement;};
 $.o2xml=function(o,n){if(!n){n='item'}if(Array.prototype.isPrototypeOf(o)){return $.a2xml(n,o);}else if(typeof(o)=='object'){return $._o2xml(n,o);}else{return $.v2xml(n,o);}};
 $._o2xml=function(n,o){var xml='<'+n+'>';var pr;if(n!='hashtags'){
 	for(var prop in o){pr=prop;if(!isNaN(prop)){pr='x'+pr}if(Array.prototype.isPrototypeOf(o[prop])){xml+=$.a2xml(pr,o[prop]);}else if(typeof(o[prop])=='object'){xml+=$._o2xml(pr,o[prop]);}else{xml+=$.v2xml(pr,o[prop]);}}return xml+'</'+n+'>';}else{return ''}};
@@ -77,24 +78,23 @@ $.load=function(url,_elm,_onfinish,_onstep,_onerror,_mem){var req=this._req();
 /*-----------------------------------------------------------------------------------------------------  XML RENDER TOOL */
  $.preload=function(url,_onfinish,_mem){if(!_mem){_mem={}}_mem.pre_url=url;_mem.pre_onfinish=_onfinish;return $.load(url,false,$._dopreload,false,false,_mem)};
  $.preloaded=function(name){name=ooo.sub(name,'#HOST#',ooo.host);for(var i=0;i<ooo._preloaded.length;i++){if(ooo._preloaded[i].url==name){return ooo._preloaded[i].xml;}}return false;};
- $.syncrender=function(target,template,data,_mode){var allsubs=ooo.sel('//*/@substitution',template);var b;
- 	for(var a=0;a<allsubs.length;a++){for(b=a+1;b<allsubs.length;b++){
- 		if(ooo.starts(allsubs[a].value,allsubs[b].value)||ooo.starts(allsubs[b].value,allsubs[a].value)){
- 			console.warn('Not all substitutions are uniquely prefixed:'+allsubs[a]+':'+allsubs[b])}}};
- $._syncrender(target,template,data,_mode||'normal');};
+ $.syncrender=function(target,template,data,_mode){if(!template.childNodes){template=$.JSON2xmldoc(template,'template');}if(!data.childNodes){data=$.JSON2xmldoc(data,'response');}
+	 var allsubs=ooo.sel('//*/@substitution',template);var b;for(var a=0;a<allsubs.length;a++){
+	 for(b=a+1;b<allsubs.length;b++){if(ooo.starts(allsubs[a].value,allsubs[b].value)||ooo.starts(allsubs[b].value,allsubs[a].value)){
+ 		console.warn('Not all substitutions are uniquely prefixed:'+allsubs[a]+':'+allsubs[b])}}};$._syncrender(target,template,data,_mode||'normal');};
  $.render=function(target,template,data,_elm,_mode,_onfinish,_onstep,_onerror){return $.load(template,_elm,$._dorendercontrol1,false,false,{"target":target,"template":template,"data":data,"elm":_elm,"onfinish":_onfinish,"onstep":_onstep,"onerror":_onerror,"mode":_mode||'normal'});};
  $._req=function(){var rq=false;if(window.XMLHttpRequest&&!(window.ActiveXObject)){try{rq=new XMLHttpRequest();}catch(exk){rq=false;}}else if(window.ActiveXObject){try{rq=new ActiveXObject("Msxml2.XMLHTTP");}catch(ex){try{rq=new ActiveXObject("Microsoft.XMLHTTP");}catch(exx){rq=false;}}}if(!rq){ooo.err('This browser is neither w3c or mozilla compatible*[2008], uno.xml javascript framework will not work.');}return rq;};
  $._doload=function(ev,_elm,_onfinish,_onstep,_onerror,_mem){
  	var req=(ev.currentTarget||ev.target||ev.srcElement);if(req.readyState>1&&req.readyState<4){if(req.status==200){if(_onstep)_onstep(req);}
  	}else if(req.readyState==4){if(req.status==200){_onfinish(req,_mem);}else{console.log('Request failed');console.log(req);if(_onerror){_onerror(req)}}}};
  $._preloaded=[];$._dopreload=function(req,oo){$._preloaded[$._preloaded.length]={url:oo.pre_url,xml:ooo.parsexml(req.responseText)};if(oo.pre_onfinish){oo.pre_onfinish(req,oo);}};
- $._dorendercontrol1=function(req,oo){oo.templateXML=ooo.parsexml(req.responseText);$._dorendercontrol2(false,oo);};
+ $._dorendercontrol1=function(req,oo){var ct=this.getResponseHeader('content-type');if(ct.indexOf('xml')<0){oo.templateXML=JSON.parse(req.responseText)}else{oo.templateXML=ooo.parsexml(req.responseText);}$._dorendercontrol2(false,oo);};
  $._dorendercontrol2=function(nouse,oo){/*AUTOMAGIC PRELOAD RETRIVAL*/
     var ins=ooo.sel('//inline',oo.templateXML);var flag=false;if(ins){if(ins.length>0){
     var prel;for(var xi=0;xi<ins.length;xi++){prel=ooo.xatt(ins[xi],'preload');if(!$.preloaded(prel)){flag=true;break;}}}}
     //TODO:Check inline's inlines
     if(flag){$.preload(prel,$._dorendercontrol2,oo);}else{$.load(oo.data,oo.elm,$._dorendercontrol3,false,false,oo);}};
- $._dorendercontrol3=function(req,oo){oo.dataXML=ooo.parsexml(req.responseText);var s=$.syncrender(oo.target,oo.templateXML.documentElement,oo.dataXML.documentElement,oo.mode||'normal');if(oo.onfinish){oo.onfinish(s,oo)}};
+ $._dorendercontrol3=function(req,oo){var ct=this.getResponseHeader('content-type');if(ct.indexOf('xml')<0){oo.dataXML=JSON.parse(req.responseText)}else{oo.dataXML=ooo.parsexml(req.responseText);}var s=$.syncrender(oo.target,oo.templateXML.documentElement,oo.dataXML.documentElement,oo.mode||'normal');if(oo.onfinish){oo.onfinish(s,oo)}};
 /*--------------------------------------------------------------------------------------------  XML RENDER MAIN FUNCTION */
 /*THIS is the most complex and useful js function I ever wrote - everything else in this script,is to make THIS possible.*/
 /*--------------------------------------------------------------------------------------------  XML RENDER MAIN FUNCTION */
