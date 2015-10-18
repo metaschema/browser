@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<document>
-<rowtype tagname="child">
-  <!--Instead of directly inline the same template we use this A->B->A->loop of templates, this is to enable for simpler expression writing-->
-  <inline tagname="." preload="template-doc-node.xml" substitution="%child"/>
-<html>%child</html></rowtype></document>
