@@ -8,7 +8,7 @@ var is_chrome=_t00UA.indexOf('chrome')>-1;var is_opera=_t00UA.indexOf("opera")!=
 window.ooo={};
 (function($,window,undefined){$.$$=function(e){if(typeof e=='string'){e=document.getElementById(e);}return e;};$.err=function(msg,ex){console.log(msg)};
 /*-----------------------------------------------------------------------------------------------------  STRING UTILITIES */
-  $.host=document.location.protocol+'//'+document.location.hostname;$._uid=0;$.uid=function(_pfx){this._uid++;if(!_pfx){_pfx='uid';}return _pfx+this._uid;};
+ $.host=document.location.protocol+'//'+document.location.hostname;$._uid=0;$.uid=function(_pfx){this._uid++;if(!_pfx){_pfx='uid';}return _pfx+this._uid;};
  $.starts=function(v,m){return v.indexOf(m)==0};$.ends=function(v,m){return v.length>=m.length&&v.substr(v.length-m.length)===m;};$.inoe=function(v){if(!v){return true}return (v==null||v==='')};
  $.sub=function(v,m,n,icase){return v.replace(new RegExp(m.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),(icase?"gi":"g")),(typeof(n)=="string")?n.replace(/\$/g,"$$$$"):n);};
  $.pureid=function(v){return v.replace(/ |}|\||<|>|\\|!|"|£|$|%|&|\/|\(|\)|=|\?|'|"|^|\*|\+|\[|\]|§|#|°|@|\.|,|;|:|à|è|ì|ò|ù/g,'');};
@@ -22,7 +22,7 @@ window.ooo={};
  /*uno.escapejs=function(svalue){return svalue.replace(/(["'\\\.\|\[\]\^\*\+\?\$\(\)])/g, '\\$1');};*/
  $.escape=function(v,mode){if(v&&mode){if(mode=='num'){v=v.replace(/\./g, '')}else if(mode=='text'){v=v.replace(/<(.|\n)*?>/g,'');}else if(mode=='js'){v=v.replace(/'/g,'\\\'');}else if(mode=='xml'){v=v.replace(/"/g,'&quot;');}else if(mode=='url'){v=encodeURIComponent(v);}else if(mode=='lru'){v=decodeURIComponent(v);}else if(mode=='id'){v=this.pureid(v);}else if(mode=='html'){v=this.htmlentities(v);}}return v;};
  /*--------------------------------------------------------------------------------------------------  HTML DOM UTILITIES */
-  $.att=function(e,a,v){if(e){if(v){e.setAttribute(a,v);}else{return e.getAttribute(a)}}return false};
+ $.att=function(e,a,v){if(e){if(v){e.setAttribute(a,v);}else{return e.getAttribute(a)}}return false};
  $.ins=function(p,tag,aa,_html,b){var i;var elm=document.createElement(tag);if(_html){elm.innerHTML=_html;}p=this.$$(p);if(aa){for(i=0;i<aa.length;i+=2){this.att(elm,aa[i],aa[i+1]);}}if(p){if(b==true){return p.insertBefore(elm,p.firstChild);}else if(b){return p.insertBefore(elm,b);}else{return p.appendChild(elm);}}else{return elm}},
  $.move=function(elm,p,atbegin){p=this.$$(p);elm=this.$$(elm);if(atbegin){p.insertBefore(elm,p.firstChild)}else{p.appendChild(elm.parentNode.removeChild(elm));}};
  $.clearchilds=function(elm){elm=this.$$(elm);if(elm&&elm.hasChildNodes&&elm.removeChild){while(elm.hasChildNodes()){elm.removeChild(elm.firstChild);}}};
@@ -39,7 +39,7 @@ window.ooo={};
  $.toggleclass=function(ee,v){if(ee.style){ee=[ee];}var c;for(var e=0;e<ee.length;e++){c=ee[e].className;if(c.indexOf(v)>-1){c=c.replace(v,'');}else{c=c+' '+v;}ee[e].className=c;}};
  $.isEventSupported=(function(){/*Perfection Kills by kangax*/var TAGNAMES={'select':'input','change':'input','submit':'form','reset':'form','error':'img','load':'img','abort':'img'};function isEventSupported(eventName){var el=document.createElement(TAGNAMES[eventName]||'div');eventName='on'+eventName;var isSupported=(eventName in el);if(!isSupported){el.setAttribute(eventName,'return;');isSupported=typeof el[eventName]=='function';}el=null;return isSupported;}return isEventSupported;})();
  /*---------------------------------------------------------------------------------------------------  XML DOM UTILITIES */
-  $.xatt=function(n,aname){if(n){return n.getAttribute(aname)}return false};$._xnatt=function(a){if(a){if(a.value){return a.value;}if(a.nodeValue){return a.nodeValue;}}return '';};
+ $.xatt=function(n,aname){if(n){return n.getAttribute(aname)}return false};$._xnatt=function(a){if(a){if(a.value){return a.value;}if(a.nodeValue){return a.nodeValue;}}return '';};
  $.xtext=function(n,removecdata){if(!n){return null;}var s=this._xntext(n);if(removecdata){if(s){s=s.replace(/<(.|\n)*?>/g,'');}}return s;};
  $._xntext=function(n){if(n.text){return n.text;}if(n.textContent){return n.textContent;}if(n.innerText){return n.innerText;}if(n.value){return n.value;}};
  $.xml=function(n,removecdata){if(removecdata){return this.tostringformat(n,'','<','>','','',true,false);}if(n.xml){return n.xml;}try{if(XMLSerializer){var test=(new XMLSerializer()).serializeToString(n);return test;}}catch(ex){i=0;}return this.tostringformat(n,'','<','>','','',removecdata,false);};
@@ -51,15 +51,6 @@ window.ooo={};
   if(n.childNodes.length>0){if(n.nodeName!='#document'){test+=closet+nl;}for(var i=0;i<n.childNodes.length;i++){if(n.childNodes[i].nodeName=='#text'){var data=this._xntext(n.childNodes[i]);if(killempty){for(var axe=0;axe<1000;axe++){if(data.indexOf(' ')==0){data=data.replace(' ', '');}else if(data.indexOf('\n')==0){data=data.replace('\n', '');}else{axe=2000;}}}if(data!=''){test+=tab+incr+this._xntext(n.childNodes[i])+nl;}}else if(n.childNodes[i].nodeName=='#cdata-section'){test+=tab+incr+bcdata+this._xntext(n.childNodes[i])+acdata+nl;}else if(n.childNodes[i].nodeType==1){test+=this.tostringformat(n.childNodes[i],tab+incr,opent,closet,nl,incr,rcd,killempty);}}}
 	else{if(n.nodeName!='#document'){return test+='/'+closet+nl;}}if(n.nodeName!='#document'){return test+tab+opent+'/'+n.nodeName+closet+nl;}else{return test;}}};
  $.listonode=function(nl){var xml='<?xml version="1.0" encoding="utf-8" ?><document>\n<!--copyright openuno.org 2015-->';for(var n=0;n<nl.length;n++){xml+=this.xml(nl[n]);}return this.parsexml(xml+'</document>').documentElement;};
-//---------------------------------------------------------------------------------------------------
-//---------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------- OBJECT 2 XML
-$.JSON2xmldoc=function(o,n){var s='<?xml version="1.0" encoding="utf-8" ?>\n'+$.o2xml(o,n);return $.parsexml(s).documentElement;};
-$.o2xml=function(o,n){if(!n){n='item'}if(Array.prototype.isPrototypeOf(o)){return $.a2xml(n,o);}else if(typeof(o)=='object'){return $._o2xml(n,o);}else{return $.v2xml(n,o);}};
-$._o2xml=function(n,o){var xml='<'+n+'>';var pr;if(n!='hashtags'){
-	for(var prop in o){pr=prop;if(!isNaN(prop)){pr='x'+pr}if(Array.prototype.isPrototypeOf(o[prop])){xml+=$.a2xml(pr,o[prop]);}else if(typeof(o[prop])=='object'){xml+=$._o2xml(pr,o[prop]);}else{xml+=$.v2xml(pr,o[prop]);}}return xml+'</'+n+'>';}else{return ''}};
-$.a2xml=function(n,a){var xml='';for(var i=0;i<a.length;i++){if(Array.prototype.isPrototypeOf(a[i])){xml+=$.a2xml(n,a[i]);}else if(typeof(a[i]=='object')){xml+=$._o2xml(n,a[i]);}else{xml+=$.v2xml(n,a[i]);}}return xml;};
-$.v2xml=function(n,v){if(typeof(v)=='function'){return ''}var cd=false;if(typeof(v)=='string'){cd=true;}if(cd){return '<'+n+'><![CDATA['+v+']]></'+n+'>';}else{return '<'+n+'>'+v+'</'+n+'>';}};
 /*--------------------------------------------------------------------------------------------------  XPATH SELECTOR TOOL */
  $.getdoc=function(n){while(n.nodeType!=9){n=n.parentNode;}return n;};
  $.selone=function(xpath,n,_doc){if(!n){return null;};if(isIE){return n.selectSingleNode(xpath);}else{if(!_doc){_doc=this.getdoc(n);}var xx=_doc.evaluate(xpath,n,null,XPathResult.ANY_TYPE,null);if(xx.resultType==1){return xx.numberValue}else{return xx.iterateNext();}}};
@@ -75,10 +66,19 @@ $.load=function(url,_elm,_onfinish,_onstep,_onerror,_mem){var req=this._req();
  	 	if(!hasfile){req.open("POST",url,true);req.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
     		console.log('todo:ooo serialize');req.send(ooo.serialize(_elm))}
     	else{console.log('todo:file upload');}}return false;};
+//---------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------- OBJECT 2 XML
+$.JSON2xmldoc=function(o,n){var s='<?xml version="1.0" encoding="utf-8" ?>\n'+$.o2xml(o,n);return $.parsexml(s);};
+$.o2xml=function(o,n){if(!n){n='item'}if(Array.prototype.isPrototypeOf(o)){return $.a2xml(n,o);}else if(typeof(o)=='object'){return $._o2xml(n,o);}else{return $.v2xml(n,o);}};
+$._o2xml=function(n,o){var xml='<'+n+'>';var pr;if(n!='hashtags'){
+	for(var prop in o){pr=prop;if(!isNaN(prop)){pr='x'+pr}if(Array.prototype.isPrototypeOf(o[prop])){xml+=$.a2xml(pr,o[prop]);}else if(typeof(o[prop])=='object'){xml+=$._o2xml(pr,o[prop]);}else{xml+=$.v2xml(pr,o[prop]);}}return xml+'</'+n+'>';}else{return ''}};
+$.a2xml=function(n,a){var xml='';for(var i=0;i<a.length;i++){if(Array.prototype.isPrototypeOf(a[i])){xml+=$.a2xml(n,a[i]);}else if(typeof(a[i]=='object')){xml+=$._o2xml(n,a[i]);}else{xml+=$.v2xml(n,a[i]);}}return xml;};
+$.v2xml=function(n,v){if(typeof(v)=='function'){return ''}var cd=false;if(typeof(v)=='string'){cd=true;}if(cd){return '<'+n+'><![CDATA['+v+']]></'+n+'>';}else{return '<'+n+'>'+v+'</'+n+'>';}};
 /*-----------------------------------------------------------------------------------------------------  XML RENDER TOOL */
  $.preload=function(url,_onfinish,_mem){if(!_mem){_mem={}}_mem.pre_url=url;_mem.pre_onfinish=_onfinish;return $.load(url,false,$._dopreload,false,false,_mem)};
  $.preloaded=function(name){name=ooo.sub(name,'#HOST#',ooo.host);for(var i=0;i<ooo._preloaded.length;i++){if(ooo._preloaded[i].url==name){return ooo._preloaded[i].xml;}}return false;};
- $.syncrender=function(target,template,data,_mode){if(!template.childNodes){template=$.JSON2xmldoc(template,'template');}if(!data.childNodes){data=$.JSON2xmldoc(data,'response');}
+ $.syncrender=function(target,template,data,_mode){if(!template.childNodes){template=$.JSON2xmldoc(template,'template').documentElement;}if(!data.childNodes){data=$.JSON2xmldoc(data,'response').documentElement;}
 	 var allsubs=ooo.sel('//*/@substitution',template);var b;for(var a=0;a<allsubs.length;a++){
 	 for(b=a+1;b<allsubs.length;b++){if(ooo.starts(allsubs[a].value,allsubs[b].value)||ooo.starts(allsubs[b].value,allsubs[a].value)){
  		console.warn('Not all substitutions are uniquely prefixed:'+allsubs[a]+':'+allsubs[b])}}};$._syncrender(target,template,data,_mode||'normal');};
@@ -96,7 +96,9 @@ $.load=function(url,_elm,_onfinish,_onstep,_onerror,_mem){var req=this._req();
     if(flag){$.preload(prel,$._dorendercontrol2,oo);}else{$.load(oo.data,oo.elm,$._dorendercontrol3,false,false,oo);}};
  $._dorendercontrol3=function(req,oo){var ct=this.getResponseHeader('content-type');if(ct.indexOf('xml')<0){oo.dataXML=JSON.parse(req.responseText)}else{oo.dataXML=ooo.parsexml(req.responseText);}var s=$.syncrender(oo.target,oo.templateXML.documentElement,oo.dataXML.documentElement,oo.mode||'normal');if(oo.onfinish){oo.onfinish(s,oo)}};
 /*--------------------------------------------------------------------------------------------  XML RENDER MAIN FUNCTION */
-/*THIS is the most complex and useful js function I ever wrote - everything else in this script,is to make THIS possible.*/
+/*THIS is the most functional js function in this script - quite everything else is to make THIS possible.
+normally use syncrender, CALLING THIS FUNCTION DIRECTLY LOSES COMPATIBILITY WITH JSON (you have to .JSON2xmldoc(yourJSONresponse) by yourself)
+and also have no error checking. use it for hardcore performances with local data.*/
 /*--------------------------------------------------------------------------------------------  XML RENDER MAIN FUNCTION */
  $._syncrender=function(target,template,data,_mode,_outcodes){if(!data){if(target){return null;}else{return '';}}template=uno.xml._preloadntt(template,false);
  var rt=0;var x=0;var v=0;var i=0;var s='';var vins;var prel;var js='';var tn='';var tn1=null;var tn2=null;
