@@ -38,6 +38,9 @@ window.ooo={};
  $.showhide=function(ee,v){if(ee.style){ee=[ee];}var s='none';if(v){s='';}for(var e=0;e<ee.length;e++){ee[e].style.display=s}};
  $.toggleclass=function(ee,v){if(ee.style){ee=[ee];}var c;for(var e=0;e<ee.length;e++){c=ee[e].className;if(c.indexOf(v)>-1){c=c.replace(v,'');}else{c=c+' '+v;}ee[e].className=c;}};
  $.isEventSupported=(function(){/*Perfection Kills by kangax*/var TAGNAMES={'select':'input','change':'input','submit':'form','reset':'form','error':'img','load':'img','abort':'img'};function isEventSupported(eventName){var el=document.createElement(TAGNAMES[eventName]||'div');eventName='on'+eventName;var isSupported=(eventName in el);if(!isSupported){el.setAttribute(eventName,'return;');isSupported=typeof el[eventName]=='function';}el=null;return isSupported;}return isEventSupported;})();
+ $.download(blob,name){var blobURL=window.webkitURL.createObjectURL(blob);
+    var link=window.document.createElement('a');link.href=blobURL;link.download=name;
+    var click=document.createEvent("Event");click.initEvent("click", true, true);link.dispatchEvent(click);};
  /*---------------------------------------------------------------------------------------------------  XML DOM UTILITIES */
  $.xatt=function(n,aname){if(n){return n.getAttribute(aname)}return false};$._xnatt=function(a){if(a){if(a.value){return a.value;}if(a.nodeValue){return a.nodeValue;}}return '';};
  $.xtext=function(n,removecdata){if(!n){return null;}var s=this._xntext(n);if(removecdata){if(s){s=s.replace(/<(.|\n)*?>/g,'');}}return s;};
