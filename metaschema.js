@@ -69,7 +69,7 @@ $.load=function(url,_elm,_onfinish,_onstep,_onerror,_mem){var req=this._req();
 //---------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------- OBJECT 2 XML
-$.JSON2xmldoc=function(o,n){var s='<?xml version="1.0" encoding="utf-8" ?>\n'+$.o2xml(o,n);return $.parsexml(s);};
+$.JSON2xmldoc=function(o,n){var s='<?xml version="1.0" encoding="utf-8" ?>'+$.o2xml(o,n);return $.parsexml(s);};
 $.o2xml=function(o,n){if(!n){n='item'}if(Array.prototype.isPrototypeOf(o)){return $.a2xml(n,o);}else if(typeof(o)=='object'){return $._o2xml(n,o);}else{return $.v2xml(n,o);}};
 $._o2xml=function(n,o){var xml='<'+n+'>';var pr;if(n!='hashtags'){
 	for(var prop in o){pr=prop;if(!isNaN(prop)){pr='x'+pr}if(Array.prototype.isPrototypeOf(o[prop])){xml+=$.a2xml(pr,o[prop]);}else if(typeof(o[prop])=='object'){xml+=$._o2xml(pr,o[prop]);}else{xml+=$.v2xml(pr,o[prop]);}}return xml+'</'+n+'>';}else{return ''}};
@@ -88,13 +88,14 @@ $.v2xml=function(n,v){if(typeof(v)=='function'){return ''}var cd=false;if(typeof
  	var req=(ev.currentTarget||ev.target||ev.srcElement);if(req.readyState>1&&req.readyState<4){if(req.status==200){if(_onstep)_onstep(req);}
  	}else if(req.readyState==4){if(req.status==200){_onfinish(req,_mem);}else{console.log('Request failed');console.log(req);if(_onerror){_onerror(req)}}}};
  $._preloaded=[];$._dopreload=function(req,oo){$._preloaded[$._preloaded.length]={url:oo.pre_url,xml:ooo.parsexml(req.responseText)};if(oo.pre_onfinish){oo.pre_onfinish(req,oo);}};
- $._dorendercontrol1=function(req,oo){var ct=req.getResponseHeader('content-type');if(ct.indexOf('xml')<0){oo.templateXML=JSON2xmldoc(JSON.parse(req.responseText))}else{oo.templateXML=ooo.parsexml(req.responseText);}$._dorendercontrol2(false,oo);};
+ $._dorendercontrol1=function(req,oo){var ct=req.getResponseHeader('content-type');if(!ct){if((req.responseText.indexOf('<?xml version="1')>0)&&(req.responseText.indexOf('<?xml version="1')<20)){ct='xml'}}if(!ct){ct='xml'}if(ct.indexOf('xml')<0){oo.templateXML=ooo.JSON2xmldoc(JSON.parse(req.responseText))}else{oo.templateXML=ooo.parsexml(req.responseText);}$._dorendercontrol2(false,oo);};
  $._dorendercontrol2=function(nouse,oo){/*AUTOMAGIC PRELOAD RETRIVAL*/
     var ins=ooo.sel('//inline',oo.templateXML);var flag=false;if(ins){if(ins.length>0){
     var prel;for(var xi=0;xi<ins.length;xi++){prel=ooo.xatt(ins[xi],'preload');if(!$.preloaded(prel)){flag=true;break;}}}}
     //TODO:Check inline's inlines
     if(flag){$.preload(prel,$._dorendercontrol2,oo);}else{$.load(oo.data,oo.elm,$._dorendercontrol3,false,false,oo);}};
- $._dorendercontrol3=function(req,oo){var ct=req.getResponseHeader('content-type');if(ct.indexOf('xml')<0){oo.dataXML=JSON2xmldoc(JSON.parse(req.responseText))}else{oo.dataXML=ooo.parsexml(req.responseText);}var s=$.syncrender(oo.target,oo.templateXML.documentElement,oo.dataXML.documentElement,oo.mode||'normal');if(oo.onfinish){oo.onfinish(s,oo)}};
+ $._dorendercontrol3=function(req,oo){var ct=req.getResponseHeader('content-type');if(!ct){if((req.responseText.indexOf('<?xml version="1')>0)&&(req.responseText.indexOf('<?xml version="1')<20)){ct='xml'}}if(!ct){ct='json'}if(ct.indexOf('xml')<0){oo.dataXML=ooo.JSON2xmldoc(JSON.parse(req.responseText));if(ooo.ixml(oo.dataXML).indexOf("Below")>-1){throw new Error('here')}
+	 }else{oo.dataXML=ooo.parsexml(req.responseText);}window.lastJob=oo;var s=$.syncrender(oo.target,oo.templateXML.documentElement,oo.dataXML.documentElement,oo.mode||'normal');if(oo.onfinish){oo.onfinish(s,oo)}};
 /*--------------------------------------------------------------------------------------------  XML RENDER MAIN FUNCTION */
 /*THIS is the most functional js function in this script - quite everything else is to make THIS possible.
 normally use syncrender, CALLING THIS FUNCTION DIRECTLY LOSES COMPATIBILITY WITH JSON (you have to .JSON2xmldoc(yourJSONresponse) by yourself)
