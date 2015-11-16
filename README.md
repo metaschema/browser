@@ -7,7 +7,7 @@
 Parameters with underscore are optional<br/>
 <b>ooo.render(target,template,data,_elm,_mode,_onfinish,_onstep,_onerror)</b><br/><br/>
 It allows to render data in json or xml into html elements, using and xml template.<br/>
-<< href="http://www.tipozerozero.com/ooox/index.htm">template references</a>
+<a href="http://www.tipozerozero.com/ooox/index.htm">template references</a>
 
 
 
