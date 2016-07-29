@@ -8,7 +8,9 @@ var is_chrome=_t00UA.indexOf('chrome')>-1;var is_opera=_t00UA.indexOf("opera")!=
 window.tau={};
 (function($,window,undefined){$.$$=function(e){if(typeof e=='string'){e=document.getElementById(e);}return e;};$.err=function(msg,ex){console.log(msg)};
 /*-----------------------------------------------------------------------------------------------------  STRING UTILITIES */
- $.host=document.location.protocol+'//'+document.location.hostname;$._uid=0;$.uid=function(_pfx){this._uid++;if(!_pfx){_pfx='uid';}return _pfx+this._uid;};
+ $.host=document.location.protocol+'//'+document.location.hostname;
+	if((document.location.port!='')&&(document.location.port!='80')){$.host+=':'+document.location.port}
+	$._uid=0;$.uid=function(_pfx){this._uid++;if(!_pfx){_pfx='uid';}return _pfx+this._uid;};
  $.starts=function(v,m){return v.indexOf(m)==0};$.ends=function(v,m){return v.length>=m.length&&v.substr(v.length-m.length)===m;};$.inoe=function(v){if(!v){return true}return (v==null||v==='')};
  $.sub=function(v,m,n,icase){return v.replace(new RegExp(m.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),(icase?"gi":"g")),(typeof(n)=="string")?n.replace(/\$/g,"$$$$"):n);};
  $.pureid=function(v){return v.replace(/ |}|\||<|>|\\|!|"|£|$|%|&|\/|\(|\)|=|\?|'|"|^|\*|\+|\[|\]|§|#|°|@|\.|,|;|:|à|è|ì|ò|ù/g,'');};
@@ -117,7 +119,7 @@ and also have no error checking. use it for hardcore performances with local dat
 	var xconds=null;var conds=new Array();var condsE=new Array();var condsT=new Array();var condsF=new Array();var conds_name=new Array();var conds_js=new Array();
 	var rbefore='';var rafter='';var between='';var hasbetween=true;var betweenstep;var pagecount;var maxrows=-1;var minrows=0;
 /*FOR EACH ROWTPE...*/for(rt=0;rt<rowtypes.length;rt++){
-/*ROWTYPE FETCH ROWS*/s=tau.xatt(rowtypes[rt],'tagname');if(s=="#DOCUMENT#"){rows=[data]}else{rows=tau.sel(tau._MXTRsubs(s,[const_conds,const_conds_name,consts,consts_name]),data,ddoc)}
+/*ROWTYPE FETCH ROWS*/s=tau.xatt(rowtypes[rt],'xpath');if(s=="#DOCUMENT#"){rows=[data]}else{rows=tau.sel(tau._MXTRsubs(s,[const_conds,const_conds_name,consts,consts_name]),data,ddoc)}
 /*ROWTYPE MIN-MAX logic*/maxrows=tau.xatt(rowtypes[rt],'max');if(tau.inoe(maxrows)){maxrows=rows.length}else{maxrows=parseInt(maxrows)}minrows=tau.xatt(rowtypes[rt],'min');if(tau.inoe(minrows)){minrows=0}else{minrows=parseInt(minrows)}
 /*IF ROWTYPE APPLIES...*/if(rows.length>=minrows){
 /*ROW-CASE ZERO*/if(rows.length==0){htm2+=tau._MXTRsubs(tau.cixml(rowtypes[rt],'casezero',true),[const_conds,const_conds_name,consts,consts_name]);}
@@ -149,7 +151,7 @@ rbefore=tau.sub(rbefore,'#ROWCOUNT#',rows.length.toLocaleString());rafter=tau.su
 	else{for(i=0;i<nn.length;i++){if(s==tau.xatt(nn[i],'value')){matched=i;i=1000;swflag=true;}}}
 	if(!swflag){for(i=0;i<nn.length;i++){if(!tau.inoe(tau.xatt(nn[i],'default'))){matched=i;i=1000;}}}
 	if(matched>-1){vars[vins+v]=tau._MXTRsubs(tau.ixml(nn[matched],true),[conds,conds_name,vars,vars_name,const_conds,const_conds_name],tau.xatt(xswitches[v],'escape'));}}
-/*ROW-INLINES*/for(v=0;v<xins.length;v++){s=tau.xatt(xins[v],'tagname');prel=tau.xatt(xins[v],'preload');vins=xvars.length+6+xswitches.length+v;
+/*ROW-INLINES*/for(v=0;v<xins.length;v++){s=tau.xatt(xins[v],'xpath');prel=tau.xatt(xins[v],'preload');vins=xvars.length+6+xswitches.length+v;
 	if(s=='#ELEMENT#'){tn=rows[x];}else if(s=='#DOCUMENT#'){tn=data;}else{tn=tau.listonode(tau.sel(s,rows[x]))}
 	tn1=$._syncrender(false,tau.preloaded(prel),tn,'inline',outcodes);vars[vins]=tn1.html;outcodes=tn1.outcodes;}
 /*ROW-FINALIZE VARS*/for(v=0;v<vars.length;v++){if(vars[v]==null){vars[v]='';}if(vars[v]=='undefined'){vars[v]='';}}
@@ -171,7 +173,7 @@ rbefore=tau.sub(rbefore,'#ROWCOUNT#',rows.length.toLocaleString());rafter=tau.su
 /*---------------------------------------------------------------------------------------------------------------------- */
 /*-------------------------------------------------------------------------------------------------  RENDER ENGINE UTILS */
 /*_varpickup is used to shorten code for constants and variable nodes pickup and plot*/
- tau._varpickup=function(tnode,node,subs){var v='';var exp=tau.xatt(tnode,'tagname');
+ tau._varpickup=function(tnode,node,subs){var v='';var exp=tau.xatt(tnode,'xpath');
 if(tau.inoe(exp)){v=''}else{exp=$._MXTRsubs(exp,subs);var mode=tau.xatt(tnode,'pickup');if(tau.inoe(mode)){mode='normal';}
 if(tau.starts(exp,'#ELEMENT#')){v=tau.ixml(node,true);}else if(tau.starts(exp,'@')){v=tau.xatt(node,exp.slice(1));}
 else{var xx=tau.sel(exp,node);if(mode=='normal'){v=tau.ixml(xx[0],true);}
