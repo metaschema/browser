@@ -74,7 +74,7 @@ $.load=function(url,_elm,_onfinish,_onstep,_onerror,_mem){var req=this._req();
 $.JSON2xmldoc=function(o,n){var s='<?xml version="1.0" encoding="utf-8" ?>'+$.o2xml(o,n);return $.parsexml(s);};
 $.o2xml=function(o,n){if(!n){n='item'}if(Array.prototype.isPrototypeOf(o)){return $.a2xml(n,o);}else if(typeof(o)=='object'){return $._o2xml(n,o);}else{return $.v2xml(n,o);}};
 $._o2xml=function(n,o){var xml='<'+n+'>';var pr;if(n!='hashtags'){
-	for(var prop in o){pr=prop;if(!isNaN(prop)){pr='x'+pr}if(Array.prototype.isPrototypeOf(o[prop])){xml+=$.a2xml(pr,o[prop]);}else if(typeof(o[prop])=='object'){xml+=$._o2xml(pr,o[prop]);}else{xml+=$.v2xml(pr,o[prop]);}}return xml+'</'+n+'>';}else{return ''}};
+	for(var prop in o){pr=prop;if(!isNaN(prop)){pr='x'+pr}if(Array.prototype.isPrototypeOf(o[prop])){xml+=$.a2xml(pr,o[prop]);}else if(typeof(o[prop])=='object'){xml+=$._o2xml(pr,o[prop]);}else{xml+=$.v2xml(pr.replace('$','_'),o[prop]);}}return xml+'</'+n+'>';}else{return ''}};
 $.a2xml=function(n,a){var xml='';for(var i=0;i<a.length;i++){if(Array.prototype.isPrototypeOf(a[i])){xml+=$.a2xml(n,a[i]);}else if(typeof(a[i]=='object')){xml+=$._o2xml(n,a[i]);}else{xml+=$.v2xml(n,a[i]);}}return xml;};
 $.v2xml=function(n,v){if(typeof(v)=='function'){return ''}var cd=false;if(typeof(v)=='string'){cd=true;}if(cd){return '<'+n+'><![CDATA['+v+']]></'+n+'>';}else{return '<'+n+'>'+v+'</'+n+'>';}};
 /*-----------------------------------------------------------------------------------------------------  XML RENDER TOOL */
@@ -249,7 +249,7 @@ uno.xml._preloadntt=function(ntt,_uniqueid,pidx){var e;var xx;var nn=new Array()
  xx=ntt.getElementsByTagName('cookie');nn=[];
  for(e=0;e<xx.length;e++){nn[e]=tau.xatt(xx[e],'varname');ss[e]=tau.xatt(xx[e],'substitution');xx[e].parentNode.removeChild(xx[e]);}
  for(e=0;e<nn.length;e++){ts=tau.sub(ts,ss[e],tau.cookie.read(nn[e]));} 
- ts=tau.sub(ts,'#UNIQUEID#',_uniqueid);
+ ts=tau.sub(ts,'#UNIQUEID#',_uniqueid);ts=tau.sub(ts,'#UID#',_uniqueid);
  if(pidx){ts=tau.sub(ts,'#PIDX#',pidx);}ts=ts.replace(/#HOST#/g,tau.host);return tau.parsexml('<?xml version="1.0" encoding="utf-8" ?><unontt>'+ts+'</unontt>');}
  else{var ts='';ts=ntt.outerHTML;if(ts){ts=tau.sub(ts,'#UNIQUEID#',_uniqueid);ts=ts.replace(/#HOST#/g,tau.host);}return tau.parsexml('<?xml version="1.0" encoding="utf-8" ?><unontt>'+ts+'</unontt>');}};
 //------------------------------------------------------------------- PAGE RENDER ROUTINE -------------------------------------------------------(simple handler)-//
