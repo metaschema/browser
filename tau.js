@@ -83,7 +83,7 @@ $.v2xml=function(n,v){if(typeof(v)=='function'){return ''}var cd=false;if(typeof
  $.syncrender=function(target,template,data,_mode){if(!template.childNodes){template=$.JSON2xmldoc(template,'template').documentElement;}if(!data.childNodes){data=$.JSON2xmldoc(data,'response').documentElement;}
 	 var allsubs=tau.sel('//*/@substitution',template);var b;for(var a=0;a<allsubs.length;a++){
 	 for(b=a+1;b<allsubs.length;b++){if(tau.starts(allsubs[a].value,allsubs[b].value)||tau.starts(allsubs[b].value,allsubs[a].value)){
- 		console.warn('Not all substitutions are uniquely prefixed:'+allsubs[a]+':'+allsubs[b])}}};$._syncrender(target,template,data,_mode||'normal');};
+ 		console.warn('Not all substitutions are uniquely prefixed:'+allsubs[a].value+':'+allsubs[b].value)}}};$._syncrender(target,template,data,_mode||'normal');};
  $.render=function(target,template,data,_elm,_mode,_onfinish,_onstep,_onerror){return $.load(template,_elm,$._dorendercontrol1,false,false,{"target":target,"template":template,"data":data,"elm":_elm,"onfinish":_onfinish,"onstep":_onstep,"onerror":_onerror,"mode":_mode||'normal'});};
  $._req=function(){var rq=false;if(window.XMLHttpRequest&&!(window.ActiveXObject)){try{rq=new XMLHttpRequest();}catch(exk){rq=false;}}else if(window.ActiveXObject){try{rq=new ActiveXObject("Msxml2.XMLHTTP");}catch(ex){try{rq=new ActiveXObject("Microsoft.XMLHTTP");}catch(exx){rq=false;}}}if(!rq){tau.err('This browser is neither w3c or mozilla compatible*[2008], uno.xml javascript framework will not work.');}return rq;};
  $._doload=function(ev,_elm,_onfinish,_onstep,_onerror,_mem){
