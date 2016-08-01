@@ -157,7 +157,7 @@ rbefore=tau.sub(rbefore,'#ROWCOUNT#',rows.length.toLocaleString());rafter=tau.su
 /*ROW-FINALIZE VARS*/for(v=0;v<vars.length;v++){if(vars[v]==null){vars[v]='';}if(vars[v]=='undefined'){vars[v]='';}}
 /*ROW-CONDITIONs*/for(v=0;v<xconds.length;v++){try{if(eval(tau._XTRsubs(conds_js[v],vars,vars_name))){conds[v]=condsT[v];}else{conds[v]=condsF[v];}}catch(ex){conds[v]=condsE[v];}}
 /*ROW WRITE START*/
-    htm2+=tau._MXTRsubs(tau.ixml(rowtypes[rt].getElementsByTagName('html')[0],true),[conds,conds_name,vars,vars_name,const_conds,const_conds_name,consts,consts_name])
+    htm2+=tau._MXTRsubs(tau.ixml(rowtypes[rt].getElementsByTagName('output')[0],true),[conds,conds_name,vars,vars_name,const_conds,const_conds_name,consts,consts_name])
     if((x<maxrows-1)&&(hasbetween)&&(x==(betweenstep*(pagecount-2)))){s=tau._XTRsubs(between,conds,conds_name);htm2+=tau._XTRsubs(s,vars,vars_name);pagecount=pagecount+1;}
      outcodes=uno.xml._chainload(rowtypes[rt],2,consts,consts_name,const_conds,const_conds_name,vars,vars_name,conds,conds_name,outcodes);
    }htm2+=tau._XTRsubs(rafter,consts,consts_name);}}}
@@ -259,7 +259,7 @@ try{var e;var nn=null;
  nn=data.getElementsByTagName('icon');for(e=0;e<nn.length;e++){tau.importwebicon(tau.xtext(nn[e]));}
  nn=data.getElementsByTagName('title');for(e=0;e<nn.length;e++){uno.setitle(tau.ixml(nn[e],true));}
  nn=data.getElementsByTagName('style');for(e=0;e<nn.length;e++){tau.importcss(tau.ixml(nn[e],true));}
- nn=data.getElementsByTagName('html');
+ nn=data.getElementsByTagName('output');
  var elm=tau.$$(tau.pagetarget);elm.innerHTML=tau.ixml(nn[0],true); 
  uno.xml._chainload(data,0,false,false,false,false,false,false,false,false);
 }catch(ex){alert(ex.message);}};
@@ -267,7 +267,7 @@ try{var e;var nn=null;
 uno.xml._rendercontent=function(pidx,req){var data=uno.xml._preloadntt(req.responseXML.documentElement);
  var p=uno.xml.processes[pidx];p.elm=tau.$$(p.elm);tau.clearchilds(p.elm);var written=false;
  var mode='normal';if(tau.ends(p.ptype,'append')){mode='append';}if(tau.ends(p.ptype,'insert')){mode='insert';}if(tau.ends(p.ptype,'datable')){mode='appendatable';}
- try{var ctc=data.getElementsByTagName('html')[0];
+ try{var ctc=data.getElementsByTagName('output')[0];
   uno.xml._rdrctrfill(p.elm,tau.ixml(ctc,true),mode);written=true;
   uno.xml._chainload(data,0,false,false,false,false,false,false,false,false);
  }catch(exxz){throw exxz;}
